@@ -1,8 +1,8 @@
-from janus_core.cli.janus import janus_help
+from janus_core.cli.janus import app
 import typer
 
 def show_options():
-    command = typer.main.get_command(janus_help())
+    command = typer.main.get_command(app)
     with typer.Context(command) as ctx:
         return command.get_help(ctx)
     
