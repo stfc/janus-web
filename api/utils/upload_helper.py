@@ -30,13 +30,4 @@ def save_file(file, directory=DATA_DIR):
 def calculate_md5_checksum(file_chunk):
     md5 = hashlib.md5()
     md5.update(file_chunk)
-    return md5.hexdigest()
-
-def get_all_filenames() -> list:
-    
-    return [filename for filename in os.listdir(DATA_DIR) if os.path.isfile(os.path.join(DATA_DIR, filename))]
-
-if __name__ == "__main__":
-    x = get_all_filenames()
-    print(x)
-    
+    return md5.hexdigest()    

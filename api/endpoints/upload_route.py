@@ -1,5 +1,5 @@
 from fastapi import APIRouter, UploadFile, File, Form, HTTPException
-from api.utils.upload_helper import save_chunk, reassemble_file, save_file, calculate_md5_checksum
+from api.utils.upload_helper import save_chunk, reassemble_file, save_file, calculate_md5_checksum, get_all_filenames
 
 router = APIRouter(prefix="/upload", tags=["upload"])
 
@@ -40,3 +40,8 @@ async def upload_single(file: UploadFile = File(...), file_hash: str = Form(...)
         return {"message": "File uploaded successfully", "file_path": file_path}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+    
+@router.get("/files")
+async def get_files() -> list(str):
+    filenames = [filename for filename in os.listdir(DATA_DIR) if os.path.isfile(os.path.join(DATA_DIR, filename))]
+    return filenames if filenames else ["No files found"]
