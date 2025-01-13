@@ -14,7 +14,6 @@ def singlepoint(
     arch: str = "mace_mp",
     properties: Optional[List[str]] = None,
     range_selector: Optional[str] = ":",
-    tracker: bool = True,
 ) -> Dict[str, Any]:
     """
     Perform single point calculations and return results.
