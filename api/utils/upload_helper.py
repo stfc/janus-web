@@ -1,7 +1,10 @@
-import os
+from __future__ import annotations
+
 import hashlib
+import os
 
 DATA_DIR = "/home/ubuntu/janus-api/janus-web/data"
+
 
 def save_chunk(file, chunk_number, original_filename, directory=DATA_DIR):
     os.makedirs(directory, exist_ok=True)
@@ -9,6 +12,7 @@ def save_chunk(file, chunk_number, original_filename, directory=DATA_DIR):
     with open(chunk_path, "wb") as chunk_file:
         chunk_file.write(file)
     return chunk_path
+
 
 def reassemble_file(total_chunks, original_filename, directory=DATA_DIR):
     output_path = os.path.join(directory, original_filename)
@@ -20,6 +24,7 @@ def reassemble_file(total_chunks, original_filename, directory=DATA_DIR):
             os.remove(chunk_path)
     return output_path
 
+
 def save_file(file, directory=DATA_DIR):
     os.makedirs(directory, exist_ok=True)
     file_path = os.path.join(directory, file.filename)
@@ -27,11 +32,17 @@ def save_file(file, directory=DATA_DIR):
         buffer.write(file.file.read())
     return file_path
 
+
 def calculate_md5_checksum(file_chunk):
     md5 = hashlib.md5()
     md5.update(file_chunk)
     return md5.hexdigest()
 
+
 def get_all_filenames() -> list[str]:
-    filenames = [filename for filename in os.listdir(DATA_DIR) if os.path.isfile(os.path.join(DATA_DIR, filename))]
+    filenames = [
+        filename
+        for filename in os.listdir(DATA_DIR)
+        if os.path.isfile(os.path.join(DATA_DIR, filename))
+    ]
     return filenames if filenames else ["No files found"]

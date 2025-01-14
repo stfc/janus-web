@@ -1,14 +1,17 @@
-from fastapi import APIRouter, UploadFile, File, Form, HTTPException
-from api.utils.singlepoint_helper import singlepoint
+from __future__ import annotations
+
+from fastapi import APIRouter, Form, HTTPException
 
 router = APIRouter(prefix="/singlepoint", tags=["calculations"])
 
+
 @router.post("/")
 async def calculate_singlepoint(
-                       filename: str,
-                       chunk_number: int = Form(...),
-                       total_chunks: int = Form(...),
-                       chunk_hash: str = Form(...)):
+    filename: str,
+    chunk_number: int = Form(...),
+    total_chunks: int = Form(...),
+    chunk_hash: str = Form(...),
+):
     print(file.filename)
     print(f"Received chunk {chunk_number} of {total_chunks}")
     print(f"Received Chunk MD5 Hash:   {chunk_hash}")

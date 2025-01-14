@@ -1,20 +1,17 @@
+from __future__ import annotations
+
 from pathlib import Path
-from typing import Optional, List, Dict, Any
+from typing import Any
 
 from janus_core.calculations.single_point import SinglePoint
-from janus_core.cli.utils import (
-    carbon_summary,
-    end_summary,
-    save_struct_calc,
-    start_summary,
-)
+
 
 def singlepoint(
     struct: Path,
     arch: str = "mace_mp",
-    properties: Optional[List[str]] = None,
-    range_selector: Optional[str] = ":",
-) -> Dict[str, Any]:
+    properties: list[str] | None = None,
+    range_selector: str | None = ":",
+) -> dict[str, Any]:
     """
     Perform single point calculations and return results.
 
@@ -49,9 +46,14 @@ def singlepoint(
     s_point = SinglePoint(**singlepoint_kwargs)
 
     s_point.run()
-    
+
     return s_point.results
 
+
 if __name__ == "__main__":
-    results = singlepoint(struct=Path("../../data/input.data.2055.xyz"), range_selector="0:1", properties=["stress"])
+    results = singlepoint(
+        struct=Path("../../data/input.data.2055.xyz"),
+        range_selector="0:1",
+        properties=["stress"],
+    )
     print(results)

@@ -1,14 +1,25 @@
-from fastapi import APIRouter, UploadFile, File, Form, HTTPException
-from api.utils.upload_helper import save_chunk, reassemble_file, save_file, calculate_md5_checksum, get_all_filenames
+from __future__ import annotations
+
+from fastapi import APIRouter, File, Form, HTTPException, UploadFile
+
+from api.utils.upload_helper import (
+    calculate_md5_checksum,
+    get_all_filenames,
+    reassemble_file,
+    save_chunk,
+    save_file,
+)
 
 router = APIRouter(prefix="/upload", tags=["upload"])
 
+
 @router.post("/chunk")
 async def upload_chunk(
-                       file: UploadFile = File(...),
-                       chunk_number: int = Form(...),
-                       total_chunks: int = Form(...),
-                       chunk_hash: str = Form(...)):
+    file: UploadFile = File(...),
+    chunk_number: int = Form(...),
+    total_chunks: int = Form(...),
+    chunk_hash: str = Form(...),
+):
     print(file.filename)
     print(f"Received chunk {chunk_number} of {total_chunks}")
     print(f"Received Chunk MD5 Hash:   {chunk_hash}")
@@ -27,6 +38,7 @@ async def upload_chunk(
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
+
 @router.post("/single")
 async def upload_single(file: UploadFile = File(...), file_hash: str = Form(...)):
     print(f"Received File MD5 Hash:   {file_hash}")
@@ -40,8 +52,9 @@ async def upload_single(file: UploadFile = File(...), file_hash: str = Form(...)
         return {"message": "File uploaded successfully", "file_path": file_path}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
-    
+
+
 @router.get("/files")
 async def get_files() -> list[str]:
-    files =  get_all_filenames()
+    files = get_all_filenames()
     return files

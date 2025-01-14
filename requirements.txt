@@ -2,3 +2,4 @@ uvicorn
 fastAPI
 python-multipart
 fastapi-cors
+pre-commit
