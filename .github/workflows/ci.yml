@@ -20,22 +20,22 @@ jobs:
           version: "0.5.18"
           python-version: ${{ matrix.python-version }}
 
-      - name: Report coverage to Coveralls
-        uses: coverallsapp/github-action@v2
-        with:
-          parallel: true
-          flag-name: run-${{ matrix.python-version }}
-          file: coverage.xml
-          base-path: api
+  #     - name: Report coverage to Coveralls
+  #       uses: coverallsapp/github-action@v2
+  #       with:
+  #         parallel: true
+  #         flag-name: run-${{ matrix.python-version }}
+  #         file: coverage.xml
+  #         base-path: api
 
-  coverage:
-    needs: tests
-    runs-on: ubuntu-latest
-    steps:
-      - name: Close parallel build
-        uses: coverallsapp/github-action@v2
-        with:
-          parallel-finished: true
+  # coverage:
+  #   needs: tests
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Close parallel build
+  #       uses: coverallsapp/github-action@v2
+  #       with:
+  #         parallel-finished: true
 
   pre-commit:
     runs-on: ubuntu-latest

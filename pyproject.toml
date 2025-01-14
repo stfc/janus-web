@@ -1,7 +1,7 @@
 [project]
-name = "janus-api"
+name = "janus-web"
 version = "0.0.1"
-description = "Tools for machine learnt interatomic potentials"
+description = "API for janus-core"
 authors = [
     { name = "Cameron Ball" },
 ]
@@ -28,8 +28,8 @@ dependencies = [
 [project.scripts]
 
 [project.urls]
-repository = "https://github.com/stfc/janus-core/"
-documentation = "https://stfc.github.io/janus-core/"
+repository = "https://github.com/stfc/janus-web/"
+documentation = "https://stfc.github.io/janus-web/"
 
 [dependency-groups]
 dev = [
@@ -69,7 +69,7 @@ pythonpath = ["."]
 [tool.coverage.run]
 # Configuration of coverage.py
 # reporting which lines of your plugin are covered by tests
-source=["janus_core"]
+source=["janus_web"]
 
 [tool.ruff]
 exclude = ["conf.py"]
