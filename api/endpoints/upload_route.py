@@ -42,6 +42,6 @@ async def upload_single(file: UploadFile = File(...), file_hash: str = Form(...)
         raise HTTPException(status_code=500, detail=str(e))
     
 @router.get("/files")
-async def get_files() -> list(str):
-    filenames = [filename for filename in os.listdir(DATA_DIR) if os.path.isfile(os.path.join(DATA_DIR, filename))]
-    return filenames if filenames else ["No files found"]
+async def get_files() -> list[str]:
+    files =  get_all_filenames()
+    return files
