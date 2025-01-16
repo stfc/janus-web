@@ -1,31 +1,34 @@
 from __future__ import annotations
 
-from fastapi import APIRouter, Form, HTTPException
+from fastapi import APIRouter, HTTPException, Query
+from pathlib import Path
+from typing import List, Optional, Any, Dict
+from api.utils.singplepoint_helper import singlepoint
 
 router = APIRouter(prefix="/singlepoint", tags=["calculations"])
 
-
-@router.post("/")
-async def calculate_singlepoint(
-    filename: str,
-    chunk_number: int = Form(...),
-    total_chunks: int = Form(...),
-    chunk_hash: str = Form(...),
-):
-    print(file.filename)
-    print(f"Received chunk {chunk_number} of {total_chunks}")
-    print(f"Received Chunk MD5 Hash:   {chunk_hash}")
+@router.get("/")  
+def get_singlepoint(
+    struct: str,
+    arch: Optional[str] = Query("mace_mp"),
+    properties: Optional[List[str]] = Query(None),
+    range_selector: Optional[str] = Query(":")
+) -> Dict[str, Any]:
+    """
+    Endpoint to perform single point calculations and return results.
+    """
+    base_dir = Path("data")
+    struct_path = base_dir / struct
     try:
-        file_content = await file.read()
-        calculated_hash = calculate_md5_checksum(file_content)
-        print(f"Calculated Chunk MD5 Hash: {calculated_hash}")
-        print(f"Hash matches: {calculated_hash == chunk_hash}")
-
-        chunk_path = save_chunk(file_content, chunk_number, file.filename)
-        print(f"Chunk saved at: {chunk_path}")
-
-        if chunk_number == total_chunks - 1:
-            reassemble_file(total_chunks, file.filename)
-        return {"message": "Chunk uploaded successfully", "chunk_path": chunk_path}
+        results = singlepoint(
+            struct=struct_path,
+            arch=arch,
+            properties=properties,
+            range_selector=range_selector
+        )
+        if "error" in results:
+            raise HTTPException(status_code=500, detail=results["error"])
+        return results
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        print(e)
+        raise HTTPException(status_code=500, detail="Internal Server Error")

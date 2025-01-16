@@ -2,12 +2,13 @@ from __future__ import annotations
 
 from fastapi import FastAPI
 
-from api.endpoints import cli_route, upload_route
+from api.endpoints import cli_route, upload_route, singlepoint_route
 
 app = FastAPI()
 
 app.include_router(cli_route.router)
 app.include_router(upload_route.router)
+app.include_router(singlepoint_route.router)
 
 
 @app.get("/")
