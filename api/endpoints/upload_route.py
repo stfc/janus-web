@@ -2,6 +2,9 @@
 
 from __future__ import annotations
 
+import logging
+from typing import Annotated
+
 from fastapi import APIRouter, File, Form, HTTPException, UploadFile
 
 from api.utils.upload_helper import (
@@ -12,15 +15,17 @@ from api.utils.upload_helper import (
     save_file,
 )
 
+logger = logging.getLogger(__name__)
+
 router = APIRouter(prefix="/upload", tags=["upload"])
 
 
 @router.post("/chunk")
 async def upload_chunk(
-    file: UploadFile = None,
-    chunk_number: int = Form(...),
-    total_chunks: int = Form(...),
-    chunk_hash: str = Form(...),
+    file: Annotated[UploadFile, File()],
+    chunk_number: Annotated[int, Form()],
+    total_chunks: Annotated[int, Form()],
+    chunk_hash: Annotated[str, Form()],
 ):
     """
     Allow individual chunks to be uploaded and later reassembled.
@@ -46,29 +51,27 @@ async def upload_chunk(
     HTTPException
         If there is an error during the upload process.
     """
-    if file is None:
-        file = File(...)
-    print(file.filename)
-    print(f"Received chunk {chunk_number} of {total_chunks}")
-    print(f"Received Chunk MD5 Hash:   {chunk_hash}")
+    logger.info(f"Received chunk {chunk_number} of {total_chunks}")
     try:
         file_content = await file.read()
         calculated_hash = calculate_md5_checksum(file_content)
-        print(f"Calculated Chunk MD5 Hash: {calculated_hash}")
-        print(f"Hash matches: {calculated_hash == chunk_hash}")
+        logger.info(f"Hash matches: {calculated_hash == chunk_hash}")
 
-        chunk_path = save_chunk(file_content, chunk_number, file.filename)
-        print(f"Chunk saved at: {chunk_path}")
+        save_chunk(file_content, chunk_number, file.filename)
 
         if chunk_number == total_chunks - 1:
             reassemble_file(total_chunks, file.filename)
-        return {"message": "Chunk uploaded successfully", "chunk_path": chunk_path}
+        return
     except Exception as e:
+        logger.error(f"Error during chunk upload: {e}")
         raise HTTPException(status_code=500, detail=str(e)) from e
 
 
 @router.post("/single")
-async def upload_single(file: UploadFile = None, file_hash: str = Form(...)):
+async def upload_single(
+    file: Annotated[UploadFile, File()],
+    file_hash: Annotated[str, Form()],
+):
     """
     Upload a single file.
 
@@ -89,18 +92,15 @@ async def upload_single(file: UploadFile = None, file_hash: str = Form(...)):
     HTTPException
         If there is an error during the upload process.
     """
-    if file is None:
-        file = File(...)
-    print(f"Received File MD5 Hash:   {file_hash}")
     try:
         file_content = await file.read()
         calculated_hash = calculate_md5_checksum(file_content)
-        print(f"Calculated File MD5 Hash: {calculated_hash}")
-        print(f"Hash matches: {calculated_hash == file_hash}")
+        logger.info(f"Hash matches: {calculated_hash == file_hash}")
 
-        file_path = save_file(file)
-        return {"message": "File uploaded successfully", "file_path": file_path}
+        save_file(file)
+        return
     except Exception as e:
+        logger.error(f"Error during file upload: {e}")
         raise HTTPException(status_code=500, detail=str(e)) from e
 
 
