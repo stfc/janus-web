@@ -1,8 +1,10 @@
+"""Main module for the application."""
+
 from __future__ import annotations
 
 from fastapi import FastAPI
 
-from api.endpoints import  upload_route
+from api.endpoints import upload_route
 
 app = FastAPI()
 
