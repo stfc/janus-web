@@ -3,9 +3,9 @@
 from __future__ import annotations
 
 import hashlib
-import os
+from pathlib import Path
 
-DATA_DIR = "/home/ubuntu/janus-api/janus-web/data"
+DATA_DIR = Path("/home/ubuntu/janus-api/janus-web/data")
 
 
 def save_chunk(file, chunk_number, original_filename, directory=DATA_DIR):
@@ -20,7 +20,7 @@ def save_chunk(file, chunk_number, original_filename, directory=DATA_DIR):
         The number of the chunk being saved.
     original_filename : str
         The original filename of the file being chunked.
-    directory : str, optional
+    directory : Path, optional
         The directory where the chunk will be saved (default is DATA_DIR).
 
     Returns
@@ -28,11 +28,10 @@ def save_chunk(file, chunk_number, original_filename, directory=DATA_DIR):
     str
         The path where the chunk was saved.
     """
-    os.makedirs(directory, exist_ok=True)
-    chunk_path = os.path.join(directory, f"{original_filename}_chunk_{chunk_number}")
-    with open(chunk_path, "wb") as chunk_file:
-        chunk_file.write(file)
-    return chunk_path
+    directory.mkdir(parents=True, exist_ok=True)
+    chunk_path = directory / f"{original_filename}_chunk_{chunk_number}"
+    chunk_path.write_bytes(file)
+    return str(chunk_path)
 
 
 def reassemble_file(total_chunks, original_filename, directory=DATA_DIR):
@@ -45,7 +44,7 @@ def reassemble_file(total_chunks, original_filename, directory=DATA_DIR):
         The total number of chunks.
     original_filename : str
         The original filename of the file being reassembled.
-    directory : str, optional
+    directory : Path, optional
         The directory where the chunks are stored (default is DATA_DIR).
 
     Returns
@@ -53,14 +52,14 @@ def reassemble_file(total_chunks, original_filename, directory=DATA_DIR):
     str
         The path where the reassembled file was saved.
     """
-    output_path = os.path.join(directory, original_filename)
-    with open(output_path, "wb") as complete_file:
+    output_path = directory / original_filename
+    with output_path.open("wb") as complete_file:
         for i in range(total_chunks):
-            chunk_path = os.path.join(directory, f"{original_filename}_chunk_{i}")
-            with open(chunk_path, "rb") as chunk_file:
+            chunk_path = directory / f"{original_filename}_chunk_{i}"
+            with chunk_path.open("rb") as chunk_file:
                 complete_file.write(chunk_file.read())
-            os.remove(chunk_path)
-    return output_path
+            chunk_path.unlink()
+    return str(output_path)
 
 
 def save_file(file, directory=DATA_DIR):
@@ -71,7 +70,7 @@ def save_file(file, directory=DATA_DIR):
     ----------
     file : UploadFile
         The file to be saved.
-    directory : str, optional
+    directory : Path, optional
         The directory where the file will be saved (default is DATA_DIR).
 
     Returns
@@ -79,11 +78,11 @@ def save_file(file, directory=DATA_DIR):
     str
         The path where the file was saved.
     """
-    os.makedirs(directory, exist_ok=True)
-    file_path = os.path.join(directory, file.filename)
-    with open(file_path, "wb") as buffer:
+    directory.mkdir(parents=True, exist_ok=True)
+    file_path = directory / file.filename
+    with file_path.open("wb") as buffer:
         buffer.write(file.file.read())
-    return file_path
+    return str(file_path)
 
 
 def calculate_md5_checksum(file_chunk):
@@ -114,9 +113,5 @@ def get_all_filenames() -> list[str]:
     list of str
         A list of filenames in the data directory.
     """
-    filenames = [
-        filename
-        for filename in os.listdir(DATA_DIR)
-        if os.path.isfile(os.path.join(DATA_DIR, filename))
-    ]
+    filenames = [str(file.name) for file in DATA_DIR.iterdir() if file.is_file()]
     return filenames if filenames else ["No files found"]
