@@ -85,7 +85,7 @@ def save_file(file, directory=DATA_DIR):
     return str(file_path)
 
 
-def calculate_md5_checksum(file_chunk):
+def calculate_md5_checksum(file_chunk, received_hash) -> bool:
     """
     Calculate the MD5 checksum of a file chunk.
 
@@ -93,25 +93,33 @@ def calculate_md5_checksum(file_chunk):
     ----------
     file_chunk : bytes
         The content of the file chunk.
+    received_hash : str
+        The hash calculated before the file was uploaded.
 
     Returns
     -------
-    str
-        The MD5 checksum of the file chunk.
+    bool
+        True if the hash matches.
     """
     md5 = hashlib.md5()
     md5.update(file_chunk)
-    return md5.hexdigest()
+    calculated_hash = md5.hexdigest()
+    return calculated_hash == received_hash
 
 
-def get_all_filenames() -> list[str]:
+def get_all_filenames(directory=DATA_DIR) -> list[str]:
     """
     Get a list of all filenames in the data directory.
+
+    Parameters
+    ----------
+    directory : Path
+        Directory to get the filenames from.
 
     Returns
     -------
     list of str
         A list of filenames in the data directory.
     """
-    filenames = [str(file.name) for file in DATA_DIR.iterdir() if file.is_file()]
+    filenames = [str(file.name) for file in directory.iterdir() if file.is_file()]
     return filenames if filenames else ["No files found"]

@@ -54,8 +54,8 @@ async def upload_chunk(
     logger.info(f"Received chunk {chunk_number} of {total_chunks}")
     try:
         file_content = await file.read()
-        calculated_hash = calculate_md5_checksum(file_content)
-        logger.info(f"Hash matches: {calculated_hash == chunk_hash}")
+        hash_match = calculate_md5_checksum(file_content, chunk_hash)
+        logger.info(f"Hash matches: {hash_match}")
 
         save_chunk(file_content, chunk_number, file.filename)
 
@@ -94,8 +94,7 @@ async def upload_single(
     """
     try:
         file_content = await file.read()
-        calculated_hash = calculate_md5_checksum(file_content)
-        logger.info(f"Hash matches: {calculated_hash == file_hash}")
+        logger.info(f"Hash matches: {calculate_md5_checksum(file_content, file_hash)}")
 
         save_file(file)
         return
