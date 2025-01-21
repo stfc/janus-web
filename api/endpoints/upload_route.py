@@ -41,11 +41,6 @@ async def upload_chunk(
     chunk_hash : str
         The MD5 hash of the chunk.
 
-    Returns
-    -------
-    dict
-        A dictionary containing a message and the path where the chunk was saved.
-
     Raises
     ------
     HTTPException

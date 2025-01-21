@@ -8,7 +8,9 @@ from pathlib import Path
 DATA_DIR = Path("/home/ubuntu/janus-api/janus-web/data")
 
 
-def save_chunk(file, chunk_number, original_filename, directory=DATA_DIR):
+def save_chunk(
+    file: bytes, chunk_number: int, original_filename: str, directory: Path = DATA_DIR
+) -> str:
     """
     Save a chunk of a file to the specified directory.
 
@@ -34,7 +36,9 @@ def save_chunk(file, chunk_number, original_filename, directory=DATA_DIR):
     return str(chunk_path)
 
 
-def reassemble_file(total_chunks, original_filename, directory=DATA_DIR):
+def reassemble_file(
+    total_chunks: int, original_filename: str, directory: Path = DATA_DIR
+) -> str:
     """
     Reassemble a file from its chunks.
 
@@ -62,13 +66,13 @@ def reassemble_file(total_chunks, original_filename, directory=DATA_DIR):
     return str(output_path)
 
 
-def save_file(file, directory=DATA_DIR):
+def save_file(file: bytes, directory: Path = DATA_DIR):
     """
     Save a file to the specified directory.
 
     Parameters
     ----------
-    file : UploadFile
+    file : bytes
         The file to be saved.
     directory : Path, optional
         The directory where the file will be saved (default is DATA_DIR).
@@ -85,7 +89,7 @@ def save_file(file, directory=DATA_DIR):
     return str(file_path)
 
 
-def calculate_md5_checksum(file_chunk, received_hash) -> bool:
+def calculate_md5_checksum(file_chunk: bytes, received_hash: str) -> bool:
     """
     Calculate the MD5 checksum of a file chunk.
 
@@ -107,7 +111,7 @@ def calculate_md5_checksum(file_chunk, received_hash) -> bool:
     return calculated_hash == received_hash
 
 
-def get_all_filenames(directory=DATA_DIR) -> list[str]:
+def get_all_filenames(directory: Path = DATA_DIR) -> list[str]:
     """
     Get a list of all filenames in the data directory.
 
