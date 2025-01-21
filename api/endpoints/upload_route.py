@@ -26,7 +26,7 @@ async def upload_chunk(
     chunk_number: Annotated[int, Form()],
     total_chunks: Annotated[int, Form()],
     chunk_hash: Annotated[str, Form()],
-):
+) -> None:
     """
     Allow individual chunks to be uploaded and later reassembled.
 
@@ -56,7 +56,6 @@ async def upload_chunk(
 
         if chunk_number == total_chunks - 1:
             reassemble_file(total_chunks, file.filename)
-        return
     except Exception as e:
         logger.error(f"Error during chunk upload: {e}")
         raise HTTPException(status_code=500, detail=str(e)) from e
@@ -66,7 +65,7 @@ async def upload_chunk(
 async def upload_single(
     file: Annotated[UploadFile, File()],
     file_hash: Annotated[str, Form()],
-):
+) -> None:
     """
     Upload a single file.
 
@@ -87,7 +86,6 @@ async def upload_single(
         logger.info(f"Hash matches: {calculate_md5_checksum(file_content, file_hash)}")
 
         save_file(file)
-        return
     except Exception as e:
         logger.error(f"Error during file upload: {e}")
         raise HTTPException(status_code=500, detail=str(e)) from e
