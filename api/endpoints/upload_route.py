@@ -77,11 +77,6 @@ async def upload_single(
     file_hash : str
         The MD5 hash of the file.
 
-    Returns
-    -------
-    dict
-        A dictionary containing a message and the path where the file was saved.
-
     Raises
     ------
     HTTPException

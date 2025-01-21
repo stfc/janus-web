@@ -33,7 +33,7 @@ def save_chunk(
     directory.mkdir(parents=True, exist_ok=True)
     chunk_path = directory / f"{original_filename}_chunk_{chunk_number}"
     chunk_path.write_bytes(file)
-    return str(chunk_path)
+    return chunk_path
 
 
 def reassemble_file(
@@ -63,7 +63,7 @@ def reassemble_file(
             with chunk_path.open("rb") as chunk_file:
                 complete_file.write(chunk_file.read())
             chunk_path.unlink()
-    return str(output_path)
+    return output_path
 
 
 def save_file(file: bytes, directory: Path = DATA_DIR):
@@ -86,7 +86,7 @@ def save_file(file: bytes, directory: Path = DATA_DIR):
     file_path = directory / file.filename
     with file_path.open("wb") as buffer:
         buffer.write(file.file.read())
-    return str(file_path)
+    return file_path
 
 
 def calculate_md5_checksum(file_chunk: bytes, received_hash: str) -> bool:
@@ -126,4 +126,4 @@ def get_all_filenames(directory: Path = DATA_DIR) -> list[str]:
         A list of filenames in the data directory.
     """
     filenames = [str(file.name) for file in directory.iterdir() if file.is_file()]
-    return filenames if filenames else ["No files found"]
+    return filenames if filenames else []
