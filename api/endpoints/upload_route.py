@@ -98,7 +98,7 @@ async def get_files() -> list[str]:
 
     Returns
     -------
-    list of str
+    list[str]
         A list of filenames of all uploaded files.
     """
     return get_all_filenames()
