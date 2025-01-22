@@ -18,9 +18,9 @@ router = APIRouter(prefix="/singlepoint", tags=["calculations"])
 @router.get("/")
 def get_singlepoint(
     struct: Annotated[str, Query()],
-    arch: Annotated[str | None, Query("mace_mp")],
-    properties: Annotated[list[str] | None, Query(None)],
-    range_selector: Annotated[str | None, Query(":")],
+    arch: Annotated[str | None, Query()] = "mace_mp",
+    properties: Annotated[list[str] | None, Query()] = None,
+    range_selector: Annotated[str | None, Query()] = ":",
 ) -> dict[str, Any]:
     """
     Endpoint to perform single point calculations and return results.
