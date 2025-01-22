@@ -4,12 +4,13 @@ from __future__ import annotations
 
 from fastapi import FastAPI
 
-from api.endpoints import upload_route
+from api.endpoints import singlepoint_route, upload_route
 import logging_config
 
 app = FastAPI()
 
 app.include_router(upload_route.router)
+app.include_router(singlepoint_route.router)
 
 if __name__ == "__main__":
     import uvicorn
