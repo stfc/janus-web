@@ -48,17 +48,14 @@ def get_singlepoint(request: SinglePointRequest) -> dict[str, Any]:
     """
     base_dir = Path("data")
     struct_path = base_dir / request.struct
-    logger.info(request)
+    logger.info("Request contents:", request)
     try:
-        results = singlepoint(
+        return singlepoint(
             struct=struct_path,
             arch=request.arch,
             properties=request.properties,
             range_selector=request.range_selector,
         )
-        if "error" in results:
-            raise HTTPException(status_code=500, detail=results["error"])
-        return results
     except Exception as e:
         logger.error(e)
         raise HTTPException(status_code=500, detail="Internal Server Error") from e
