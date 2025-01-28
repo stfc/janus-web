@@ -4,9 +4,11 @@ from __future__ import annotations
 
 import logging
 from pathlib import Path
-from typing import Annotated, Any
+from typing import Any
 
-from fastapi import APIRouter, HTTPException, Query
+from fastapi import APIRouter, HTTPException
+from janus_core.helpers.janus_types import Architectures, Properties
+from pydantic import BaseModel
 
 from api.utils.singlepoint_helper import singlepoint
 
@@ -15,30 +17,28 @@ logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/singlepoint", tags=["calculations"])
 
 
-@router.get("/")
-def get_singlepoint(
-    struct: Annotated[str, Query()],
-    arch: Annotated[str | None, Query()] = "mace_mp",
-    properties: Annotated[list[str] | None, Query()] = None,
-    range_selector: Annotated[str | None, Query()] = ":",
-) -> dict[str, Any]:
+class SinglePointRequest(BaseModel):
+    """Class validation for singlepoint requests."""
+
+    struct: str
+    arch: Architectures
+    properties: list[Properties]
+    range_selector: str
+
+
+@router.post("/")
+def get_singlepoint(request: SinglePointRequest) -> dict[str, Any]:
     """
     Endpoint to perform single point calculations and return results.
 
     Parameters
     ----------
-    struct : str
-        The filename of the dataset to perform calculations on.
-    arch : str
-        The name of the model to perform the calculations with.
-    properties : List[str]
-        The properties to calculate.
-    range_selector : str
-        The range of indicies to read from the data structure.
+    request : SinglePointRequest
+        The request body containing the parameters for the calculation.
 
     Returns
     -------
-    Dict[str, Any]
+    dict[str, Any]
         Results of the single point calculations.
 
     Raises
@@ -47,13 +47,14 @@ def get_singlepoint(
         If there is an error during the call.
     """
     base_dir = Path("data")
-    struct_path = base_dir / struct
+    struct_path = base_dir / request.struct
+    logger.info(request)
     try:
         results = singlepoint(
             struct=struct_path,
-            arch=arch,
-            properties=properties,
-            range_selector=range_selector,
+            arch=request.arch,
+            properties=request.properties,
+            range_selector=request.range_selector,
         )
         if "error" in results:
             raise HTTPException(status_code=500, detail=results["error"])
