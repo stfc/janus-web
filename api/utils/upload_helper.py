@@ -8,6 +8,30 @@ from pathlib import Path
 DATA_DIR = Path("/home/ubuntu/janus-api/janus-web/data")
 
 
+def save_file(file_contents: bytes, filename: str, directory: Path = DATA_DIR):
+    """
+    Save a file to the specified directory.
+
+    Parameters
+    ----------
+    file_contents : bytes
+        The file to be saved.
+    filename : str
+        Name of the file to be saved.
+    directory : Path, optional
+        The directory where the file will be saved (default is DATA_DIR).
+
+    Returns
+    -------
+    str
+        The path where the file was saved.
+    """
+    directory.mkdir(parents=True, exist_ok=True)
+    file_path = directory / filename
+    file_path.write_bytes(file_contents)
+    return file_path
+
+
 def save_chunk(
     file: bytes, chunk_number: int, original_filename: str, directory: Path = DATA_DIR
 ) -> str:
@@ -64,29 +88,6 @@ def reassemble_file(
                 complete_file.write(chunk_file.read())
             chunk_path.unlink()
     return output_path
-
-
-def save_file(file: bytes, directory: Path = DATA_DIR):
-    """
-    Save a file to the specified directory.
-
-    Parameters
-    ----------
-    file : bytes
-        The file to be saved.
-    directory : Path, optional
-        The directory where the file will be saved (default is DATA_DIR).
-
-    Returns
-    -------
-    str
-        The path where the file was saved.
-    """
-    directory.mkdir(parents=True, exist_ok=True)
-    file_path = directory / file.filename
-    with file_path.open("wb") as buffer:
-        buffer.write(file.file.read())
-    return file_path
 
 
 def calculate_md5_checksum(file_chunk: bytes, received_hash: str) -> bool:
