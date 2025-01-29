@@ -13,13 +13,13 @@ import numpy as np
 logger = logging.getLogger(__name__)
 
 
-def convert_ndarray_to_list(obj) -> dict:
+def convert_ndarray_to_list(obj: dict | list | np.ndarray | float) -> dict:
     """
     Recursive function to convert numpy arrays into a useable format for fastAPI.
 
     Parameters
     ----------
-    obj : Any
+    obj : dict | list | np.ndarray | float
         The object to be checked and potentially converted.
 
     Returns
@@ -27,7 +27,6 @@ def convert_ndarray_to_list(obj) -> dict:
     dict
         Dictionary of properties calculated.
     """
-    print(obj)
     if isinstance(obj, np.ndarray):
         return obj.tolist()
     if isinstance(obj, dict):
@@ -50,9 +49,9 @@ def singlepoint(
     ----------
     struct : str
         Filename of structure to simulate.
-    arch : str
+    arch : Architectures
         MLIP architecture to use for single point calculations. Default is "mace_mp".
-    properties : List[str]
+    properties : List[Properties]
         Physical properties to calculate. Default is ("energy", "forces", "stress").
     range_selector : str
         Range of indices to include from the structure. Default is all.
@@ -75,6 +74,5 @@ def singlepoint(
     s_point = SinglePoint(**singlepoint_kwargs)
 
     s_point.run()
-    print(s_point.results)
 
     return convert_ndarray_to_list(s_point.results)
