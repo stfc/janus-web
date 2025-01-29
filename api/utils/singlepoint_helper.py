@@ -13,27 +13,29 @@ import numpy as np
 logger = logging.getLogger(__name__)
 
 
-def convert_ndarray_to_list(obj: dict | list | np.ndarray | float) -> dict:
+def convert_ndarray_to_list(
+    data: dict[str, Any] | list | np.ndarray | float,
+) -> dict[str, Any]:
     """
     Recursive function to convert numpy arrays into a useable format for fastAPI.
 
     Parameters
     ----------
-    obj : dict | list | np.ndarray | float
+    data : dict[str, Any] | list | np.ndarray | float
         The object to be checked and potentially converted.
 
     Returns
     -------
-    dict
+    dict[str, Any]
         Dictionary of properties calculated.
     """
-    if isinstance(obj, np.ndarray):
-        return obj.tolist()
-    if isinstance(obj, dict):
-        return {k: convert_ndarray_to_list(v) for k, v in obj.items()}
-    if isinstance(obj, list):
-        return [convert_ndarray_to_list(i) for i in obj]
-    return obj
+    if isinstance(data, np.ndarray):
+        return data.tolist()
+    if isinstance(data, dict):
+        return {k: convert_ndarray_to_list(v) for k, v in data.items()}
+    if isinstance(data, list):
+        return [convert_ndarray_to_list(i) for i in data]
+    return data
 
 
 def singlepoint(
