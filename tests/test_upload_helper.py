@@ -54,14 +54,10 @@ def test_reassemble_file(tmp_path):
 
 def test_save_file(tmp_path):
     """Test if save file function saves a given file in the correct directory."""
-    from io import BytesIO
-
-    from fastapi import UploadFile
-
     file_content = b"Test file content"
-    file = UploadFile(filename="testfile.txt", file=BytesIO(file_content))
+    filename = "testfile.txt"
 
-    file_path = save_file(file, tmp_path)
+    file_path = save_file(file_content, filename, tmp_path)
 
     assert Path(file_path).exists()
     assert Path(file_path).read_bytes() == file_content
