@@ -4,30 +4,22 @@ from __future__ import annotations
 
 import logging
 from pathlib import Path
-from typing import Any
 
 from fastapi import APIRouter, HTTPException
-from janus_core.helpers.janus_types import Architectures, Properties
-from pydantic import BaseModel
+from fastapi.responses import JSONResponse
 
+from api.schemas.singlepoint_schemas import SinglePointRequest
 from api.utils.singlepoint_helper import singlepoint
 
 logger = logging.getLogger(__name__)
 
 router = APIRouter(prefix="/singlepoint", tags=["calculations"])
 
-
-class SinglePointRequest(BaseModel):
-    """Class validation for singlepoint requests."""
-
-    struct: str
-    arch: Architectures
-    properties: list[Properties]
-    range_selector: str
+DATA_DIR = Path("/home/ubuntu/janus-api/janus-web/data")
 
 
 @router.post("/")
-def get_singlepoint(request: SinglePointRequest) -> dict[str, Any]:
+async def get_singlepoint(request: SinglePointRequest):
     """
     Endpoint to perform single point calculations and return results.
 
@@ -48,13 +40,28 @@ def get_singlepoint(request: SinglePointRequest) -> dict[str, Any]:
     """
     base_dir = Path("data")
     struct_path = base_dir / request.struct
-    logger.info("Request contents:", request)
+    logger.info(f"Request contents: {request}")
+
     try:
-        return singlepoint(
+        results = singlepoint(
             struct=struct_path,
             arch=request.arch,
             properties=request.properties,
             range_selector=request.range_selector,
+        )
+
+        results_file_path = results.pop("results_path", None)
+        with results_file_path.open("rb") as file:
+            file_content = file.read()
+
+        return JSONResponse(
+            content={
+                "results": results,
+                "file": {
+                    "filename": results_file_path.name,
+                    "content": file_content.decode("utf-8"),
+                },
+            }
         )
     except Exception as e:
         logger.error(e)
