@@ -49,6 +49,7 @@ def singlepoint(
     range_selector: str | None = ":",
     write_results: bool | None = True,
     results_path: Path | None = DATA_DIR / "results/",
+    format: str | None = "extxyz",
 ) -> SinglePointResults:
     """
     Perform single point calculations and return results.
@@ -67,15 +68,18 @@ def singlepoint(
         Tells function if to save the results of the calculation or not.
     results_path : Path | None
         Location to save the results.
+    format : str
+        File format to output results as.
 
     Returns
     -------
     dict[str, Any]
         Results of the single point calculations.
     """
+    logger.info(f"format type: {format}")
     read_kwargs = {"index": range_selector}
-    results_path = results_path / f"{struct.stem}-results.extxyz"
-    write_kwargs = {"filename": results_path}
+    results_path = results_path / f"{struct.stem}-results.{format}"
+    write_kwargs = {"filename": results_path, "format": f"{format}"}
 
     singlepoint_kwargs = {
         "struct_path": struct,

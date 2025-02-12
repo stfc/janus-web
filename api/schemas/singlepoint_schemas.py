@@ -22,6 +22,7 @@ class SinglePointRequest(BaseModel):
     """Class validation for singlepoint requests."""
 
     struct: str
-    arch: Architectures
-    properties: list[Properties]
-    range_selector: str
+    arch: Architectures | None = "mace_mp"
+    properties: list[Properties] | None = None
+    range_selector: str | None = None
+    format: str | None = "extxyz"

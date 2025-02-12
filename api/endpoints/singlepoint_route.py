@@ -44,10 +44,7 @@ async def get_singlepoint(request: SinglePointRequest):
 
     try:
         results = singlepoint(
-            struct=struct_path,
-            arch=request.arch,
-            properties=request.properties,
-            range_selector=request.range_selector,
+            struct=struct_path, **request.model_dump(exclude={"struct"})
         )
 
         results_file_path = results.pop("results_path", None)
