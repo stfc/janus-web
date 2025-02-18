@@ -1,5 +1,5 @@
-# janus-web
-Web app for janus-core
+# Janus-API
+API for janus-core
 
 ## Installation
 Clone the repository from Github and then install the dependencies with uv:
