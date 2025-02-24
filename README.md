@@ -12,5 +12,6 @@ uv sync
 ## Usage
 Start API with main:
 ```bash
-python main.py
+cd
+python api/main.py
 ```
