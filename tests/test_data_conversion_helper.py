@@ -1,4 +1,4 @@
-"""Tests for singlepoint calculation helper functions."""
+"""Tests for data conversion helper functions."""
 
 from __future__ import annotations
 

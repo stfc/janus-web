@@ -1,4 +1,4 @@
-"""Contains routes for performing singlepoint calculations."""
+"""Contains routes for performing geometry optimisation calculations."""
 
 from __future__ import annotations
 
@@ -8,30 +8,30 @@ from pathlib import Path
 from fastapi import APIRouter, HTTPException
 from fastapi.responses import JSONResponse
 
-from api.schemas.singlepoint_schemas import SinglePointRequest
-from api.utils.singlepoint_helper import singlepoint
+from api.schemas.geomopt_schemas import GeomOptRequest
+from api.utils.geomopt_helper import geomopt
 
 logger = logging.getLogger(__name__)
 
-router = APIRouter(prefix="/singlepoint", tags=["calculations"])
+router = APIRouter(prefix="/geomopt", tags=["calculations"])
 
 DATA_DIR = Path("/home/ubuntu/janus-api/janus-web/data")
 
 
 @router.post("/")
-async def get_singlepoint(request: SinglePointRequest):
+async def get_geomopt(request: GeomOptRequest):
     """
-    Endpoint to perform single point calculations and return results.
+    Endpoint to perform geometry optimisation calculations and return results.
 
     Parameters
     ----------
-    request : SinglePointRequest
+    request : GeomOptRequest
         The request body containing the parameters for the calculation.
 
     Returns
     -------
     dict[str, Any]
-        Results of the single point calculations.
+        Results of the geometry optimisation calculations.
 
     Raises
     ------
@@ -43,9 +43,7 @@ async def get_singlepoint(request: SinglePointRequest):
     logger.info(f"Request contents: {request}")
 
     try:
-        results = singlepoint(
-            struct=struct_path, **request.model_dump(exclude={"struct"})
-        )
+        results = geomopt(struct=struct_path, **request.model_dump(exclude={"struct"}))
 
         results_file_path = results.pop("results_path", None)
         with results_file_path.open("rb") as file:

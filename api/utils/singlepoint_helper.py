@@ -4,42 +4,16 @@ from __future__ import annotations
 
 import logging
 from pathlib import Path
-from typing import Any
 
 from janus_core.calculations.single_point import SinglePoint
 from janus_core.helpers.janus_types import Architectures, Properties
-import numpy as np
 
 from api.schemas.singlepoint_schemas import SinglePointResults
+from api.utils.data_conversion_helper import convert_ndarray_to_list
 
 logger = logging.getLogger(__name__)
 
 DATA_DIR = Path("/home/ubuntu/janus-api/janus-web/data")
-
-
-def convert_ndarray_to_list(
-    data: dict[str, Any] | list | np.ndarray | float,
-) -> dict[str, Any]:
-    """
-    Recursive function to convert numpy arrays into a useable format for fastAPI.
-
-    Parameters
-    ----------
-    data : dict[str, Any] | list | np.ndarray | float
-        The object to be checked and potentially converted.
-
-    Returns
-    -------
-    dict[str, Any]
-        Dictionary of properties calculated.
-    """
-    if isinstance(data, np.ndarray):
-        return data.tolist()
-    if isinstance(data, dict):
-        return {k: convert_ndarray_to_list(v) for k, v in data.items()}
-    if isinstance(data, list):
-        return [convert_ndarray_to_list(i) for i in data]
-    return data
 
 
 def singlepoint(

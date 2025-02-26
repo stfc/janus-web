@@ -5,7 +5,7 @@ from __future__ import annotations
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from api.endpoints import singlepoint_route, upload_route
+from api.endpoints import geomopt_route, singlepoint_route, upload_route
 import logging_config
 
 app = FastAPI()
@@ -20,6 +20,7 @@ app.add_middleware(
 
 app.include_router(upload_route.router)
 app.include_router(singlepoint_route.router)
+app.include_router(geomopt_route.router)
 
 if __name__ == "__main__":
     import uvicorn
