@@ -83,8 +83,8 @@ async def upload_single(
     """
     try:
         file_content = await file.read()
-        logger.info(f"Hash matches: {calculate_md5_checksum(file_content, file_hash)}")
-
+        # Disabled hash check for now
+        # logger.info(f"Hash matches: {calculate_md5_checksum(file_content,file_hash)}")
         save_file(file_content, file.filename)
     except Exception as e:
         logger.error(f"Error during file upload: {e}")
