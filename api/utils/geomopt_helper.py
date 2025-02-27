@@ -1,4 +1,4 @@
-"""Helper functions for performing geomotry optimisation calculations."""
+"""Helper functions for performing geometry optimisation calculations."""
 
 from __future__ import annotations
 
@@ -19,7 +19,7 @@ def geomopt(
     fmax: float = 0.1,
     steps: int = 1000,
     write_results: bool | None = True,
-    results_path: Path | None = DATA_DIR / "results/",
+    results_path: Path | None = DATA_DIR,
     format: str | None = "cif",
 ) -> GeomOptResults:
     """
@@ -47,9 +47,13 @@ def geomopt(
     GeomOptResults
         Results of the geometry optimisation.
     """
-    read_kwargs = {"index": ":"}
-    results_path = results_path / f"{struct.stem}-results.{format}"
-    write_kwargs = {"filename": results_path, "format": f"{format}"}
+    read_kwargs = {"index": -1}
+    results_file = results_path / f"{struct.stem}-results.{format}"
+    traj_path = results_path / f"{struct.stem}-traj-results.{format}"
+
+    write_kwargs = {"filename": results_file, "format": format}
+    opt_kwargs = {"trajectory": str(traj_path)}
+    traj_kwargs = {"filename": str(traj_path)}
 
     geomopt_kwargs = {
         "struct_path": struct,
@@ -60,13 +64,16 @@ def geomopt(
         "read_kwargs": read_kwargs,
         "write_results": write_results,
         "write_kwargs": write_kwargs,
+        "opt_kwargs": opt_kwargs,
+        "traj_kwargs": traj_kwargs,
     }
 
     geom_opt = GeomOpt(**geomopt_kwargs)
 
     geom_opt.run()
     results = convert_ndarray_to_list(geom_opt.struct.info)
-    results["results_path"] = results_path
+    results["results_path"] = results_file
+    results["traj_path"] = traj_path
 
     return results
 

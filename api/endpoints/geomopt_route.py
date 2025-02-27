@@ -45,16 +45,32 @@ async def get_geomopt(request: GeomOptRequest):
     try:
         results = geomopt(struct=struct_path, **request.model_dump(exclude={"struct"}))
 
-        results_file_path = results.pop("results_path", None)
-        with results_file_path.open("rb") as file:
-            file_content = file.read()
+        print(results)
+        results_file_path = results.get("results_path", None)
+        traj_path = results.get("traj_path", None)
+
+        if results_file_path:
+            with results_file_path.open("rb") as results_file:
+                results_content = results_file.read()
+
+        if traj_path:
+            with traj_path.open("rb") as traj_file:
+                traj_content = traj_file.read()
 
         return JSONResponse(
             content={
-                "results": results,
-                "file": {
+                "results": {
+                    k: v
+                    for k, v in results.items()
+                    if k not in ["results_path", "traj_path"]
+                },
+                "results_file": {
                     "filename": results_file_path.name,
-                    "content": file_content.decode("utf-8"),
+                    "content": results_content.decode("utf-8"),
+                },
+                "traj_file": {
+                    "filename": traj_path.name,
+                    "content": traj_content.decode("utf-8"),
                 },
             }
         )

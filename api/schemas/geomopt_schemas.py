@@ -12,6 +12,7 @@ class GeomOptResults(BaseModel):
     """Class validation for geometry optimisation results."""
 
     results_path: Path | None
+    traj_path: Path | None
     final_energy: float | None
     max_force: float | None
     initial_spacegroup: str | None
