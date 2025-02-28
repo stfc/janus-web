@@ -7,9 +7,9 @@ import logging
 from fastapi import APIRouter, HTTPException
 from fastapi.responses import JSONResponse
 
+from api.constants import DATA_DIR
 from api.schemas.geomopt_schemas import GeomOptRequest
 from api.utils.geomopt_helper import geomopt
-from api.constants import DATA_DIR
 
 logger = logging.getLogger(__name__)
 

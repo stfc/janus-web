@@ -8,7 +8,6 @@ from typing import Annotated
 from fastapi import APIRouter, File, Form, HTTPException, UploadFile
 
 from api.utils.upload_helper import (
-    calculate_md5_checksum,
     get_all_filenames,
     save_file,
 )

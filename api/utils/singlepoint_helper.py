@@ -8,9 +8,9 @@ from pathlib import Path
 from janus_core.calculations.single_point import SinglePoint
 from janus_core.helpers.janus_types import Architectures, Properties
 
+from api.constants import DATA_DIR
 from api.schemas.singlepoint_schemas import SinglePointResults
 from api.utils.data_conversion_helper import convert_ndarray_to_list
-from api.constants import DATA_DIR
 
 logger = logging.getLogger(__name__)
 

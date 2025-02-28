@@ -6,10 +6,9 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 import uvicorn
 
+from api.constants import FRONTEND_URL, PORT
 from api.endpoints import geomopt_route, singlepoint_route, upload_route
-from api.constants import PORT, FRONTEND_URL
 import logging_config
-
 
 app = FastAPI()
 
