@@ -4,5 +4,3 @@ log/*
 .coverage
 uv.lock
 .env
-data/*
-!data/.gitkeep
