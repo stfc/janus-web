@@ -9,8 +9,7 @@ from janus_core.helpers.janus_types import Architectures
 
 from api.schemas.geomopt_schemas import GeomOptResults
 from api.utils.data_conversion_helper import convert_ndarray_to_list
-
-DATA_DIR = Path("/home/ubuntu/janus-api/janus-web/data")
+from api.constants import DATA_DIR
 
 
 def geomopt(

@@ -1,6 +1,7 @@
 __pycache__/
-data/*
+!data/
 .venv
 log/*
 .coverage
 uv.lock
+.env

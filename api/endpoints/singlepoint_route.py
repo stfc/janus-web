@@ -3,19 +3,17 @@
 from __future__ import annotations
 
 import logging
-from pathlib import Path
 
 from fastapi import APIRouter, HTTPException
 from fastapi.responses import JSONResponse
 
 from api.schemas.singlepoint_schemas import SinglePointRequest
 from api.utils.singlepoint_helper import singlepoint
+from api.constants import DATA_DIR
 
 logger = logging.getLogger(__name__)
 
 router = APIRouter(prefix="/singlepoint", tags=["calculations"])
-
-DATA_DIR = Path("/home/ubuntu/janus-api/janus-web/data")
 
 
 @router.post("/")
@@ -38,8 +36,7 @@ async def get_singlepoint(request: SinglePointRequest):
     HTTPException
         If there is an error during the call.
     """
-    base_dir = Path("data")
-    struct_path = base_dir / request.struct
+    struct_path = DATA_DIR / request.struct
     logger.info(f"Request contents: {request}")
 
     try:

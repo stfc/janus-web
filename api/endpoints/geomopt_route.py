@@ -3,19 +3,17 @@
 from __future__ import annotations
 
 import logging
-from pathlib import Path
 
 from fastapi import APIRouter, HTTPException
 from fastapi.responses import JSONResponse
 
 from api.schemas.geomopt_schemas import GeomOptRequest
 from api.utils.geomopt_helper import geomopt
+from api.constants import DATA_DIR
 
 logger = logging.getLogger(__name__)
 
 router = APIRouter(prefix="/geomopt", tags=["calculations"])
-
-DATA_DIR = Path("/home/ubuntu/janus-api/janus-web/data")
 
 
 @router.post("/")
@@ -38,14 +36,12 @@ async def get_geomopt(request: GeomOptRequest):
     HTTPException
         If there is an error during the call.
     """
-    base_dir = Path("data")
-    struct_path = base_dir / request.struct
+    struct_path = DATA_DIR / request.struct
     logger.info(f"Request contents: {request}")
 
     try:
         results = geomopt(struct=struct_path, **request.model_dump(exclude={"struct"}))
 
-        print(results)
         results_file_path = results.get("results_path", None)
         traj_path = results.get("traj_path", None)
 

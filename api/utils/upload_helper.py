@@ -4,8 +4,7 @@ from __future__ import annotations
 
 import hashlib
 from pathlib import Path
-
-DATA_DIR = Path("/home/ubuntu/janus-api/janus-web/data")
+from api.constants import DATA_DIR
 
 
 def save_file(file_contents: bytes, filename: str, directory: Path = DATA_DIR):
@@ -30,64 +29,6 @@ def save_file(file_contents: bytes, filename: str, directory: Path = DATA_DIR):
     file_path = directory / filename
     file_path.write_bytes(file_contents)
     return file_path
-
-
-def save_chunk(
-    file: bytes, chunk_number: int, original_filename: str, directory: Path = DATA_DIR
-) -> str:
-    """
-    Save a chunk of a file to the specified directory.
-
-    Parameters
-    ----------
-    file : bytes
-        The content of the chunk to be saved.
-    chunk_number : int
-        The number of the chunk being saved.
-    original_filename : str
-        The original filename of the file being chunked.
-    directory : Path, optional
-        The directory where the chunk will be saved (default is DATA_DIR).
-
-    Returns
-    -------
-    str
-        The path where the chunk was saved.
-    """
-    directory.mkdir(parents=True, exist_ok=True)
-    chunk_path = directory / f"{original_filename}_chunk_{chunk_number}"
-    chunk_path.write_bytes(file)
-    return chunk_path
-
-
-def reassemble_file(
-    total_chunks: int, original_filename: str, directory: Path = DATA_DIR
-) -> str:
-    """
-    Reassemble a file from its chunks.
-
-    Parameters
-    ----------
-    total_chunks : int
-        The total number of chunks.
-    original_filename : str
-        The original filename of the file being reassembled.
-    directory : Path, optional
-        The directory where the chunks are stored (default is DATA_DIR).
-
-    Returns
-    -------
-    str
-        The path where the reassembled file was saved.
-    """
-    output_path = directory / original_filename
-    with output_path.open("wb") as complete_file:
-        for i in range(total_chunks):
-            chunk_path = directory / f"{original_filename}_chunk_{i}"
-            with chunk_path.open("rb") as chunk_file:
-                complete_file.write(chunk_file.read())
-            chunk_path.unlink()
-    return output_path
 
 
 def calculate_md5_checksum(file_chunk: bytes, received_hash: str) -> bool:

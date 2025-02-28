@@ -10,10 +10,9 @@ from janus_core.helpers.janus_types import Architectures, Properties
 
 from api.schemas.singlepoint_schemas import SinglePointResults
 from api.utils.data_conversion_helper import convert_ndarray_to_list
+from api.constants import DATA_DIR
 
 logger = logging.getLogger(__name__)
-
-DATA_DIR = Path("/home/ubuntu/janus-api/janus-web/data")
 
 
 def singlepoint(
@@ -22,7 +21,7 @@ def singlepoint(
     properties: list[Properties] | None = None,
     range_selector: str | None = ":",
     write_results: bool | None = True,
-    results_path: Path | None = DATA_DIR / "results/",
+    results_path: Path | None = DATA_DIR,
     format: str | None = "extxyz",
 ) -> SinglePointResults:
     """
