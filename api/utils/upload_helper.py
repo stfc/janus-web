@@ -68,5 +68,8 @@ def get_all_filenames(directory: Path = DATA_DIR) -> list[str]:
     list of str
         A list of filenames in the data directory.
     """
+    if not directory.exists():
+        directory.mkdir(parents=True, exist_ok=True)
+
     filenames = [str(file.name) for file in directory.iterdir() if file.is_file()]
     return filenames if filenames else []
