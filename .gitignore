@@ -1,7 +1,8 @@
 __pycache__/
-!data/
 .venv
 log/*
 .coverage
 uv.lock
 .env
+data/*
+!data/.gitkeep

@@ -2,9 +2,13 @@
 
 from __future__ import annotations
 
+from unittest.mock import MagicMock, patch
+
 import numpy as np
 
-from api.utils.singlepoint_helper import convert_ndarray_to_list
+mock_data_dir = MagicMock()
+with patch.dict("sys.modules", {"api.constants": MagicMock(DATA_DIR=mock_data_dir)}):
+    from api.utils.singlepoint_helper import convert_ndarray_to_list
 
 
 def test_convert_ndarray_to_list_with_array():

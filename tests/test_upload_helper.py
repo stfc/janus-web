@@ -4,14 +4,15 @@ from __future__ import annotations
 
 import hashlib
 from pathlib import Path
+from unittest.mock import MagicMock, patch
 
-from api.utils.upload_helper import (
-    calculate_md5_checksum,
-    get_all_filenames,
-    reassemble_file,
-    save_chunk,
-    save_file,
-)
+mock_data_dir = MagicMock()
+with patch.dict("sys.modules", {"api.constants": MagicMock(DATA_DIR=mock_data_dir)}):
+    from api.utils.upload_helper import (
+        calculate_md5_checksum,
+        get_all_filenames,
+        save_file,
+    )
 
 
 def test_get_all_filenames(tmp_path):
@@ -23,33 +24,6 @@ def test_get_all_filenames(tmp_path):
     result = get_all_filenames(tmp_path)
 
     assert sorted(result) == sorted(filenames)
-
-
-def test_save_chunk(tmp_path):
-    """Test if save chunk function saves a given chunk in the correct directory."""
-    file_chunk = b"Test chunk data"
-    chunk_number = 0
-    original_filename = "testfile.txt"
-
-    chunk_path = save_chunk(file_chunk, chunk_number, original_filename, tmp_path)
-
-    assert Path(chunk_path).exists()
-    assert Path(chunk_path).read_bytes() == file_chunk
-
-
-def test_reassemble_file(tmp_path):
-    """Test if file is correctly rebuilt when function called."""
-    original_filename = "testfile.txt"
-    total_chunks = 2
-    file_chunks = [b"Test chunk 1", b"Test chunk 2"]
-
-    for i, chunk in enumerate(file_chunks):
-        save_chunk(chunk, i, original_filename, tmp_path)
-
-    reassembled_file_path = reassemble_file(total_chunks, original_filename, tmp_path)
-
-    assert Path(reassembled_file_path).exists()
-    assert Path(reassembled_file_path).read_bytes() == b"".join(file_chunks)
 
 
 def test_save_file(tmp_path):
